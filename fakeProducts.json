@@ -1,0 +1,22 @@
+{
+  "fakeProducts": [
+    {
+      "id": 1,
+      "pname": "A",
+      "price": 2345,
+      "quantity": 2
+    },
+    {
+      "id": 2,
+      "pname": "B",
+      "price": 3345,
+      "quantity": 3
+    },
+    {
+      "id": 3,
+      "pname": "C",
+      "price": 4345,
+      "quantity": 4
+    }
+  ]
+}

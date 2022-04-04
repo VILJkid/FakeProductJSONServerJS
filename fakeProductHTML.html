@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fake Products</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+    <style>
+      .toastPosition {
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+      }
+    </style>
+  </head>
+  <body onload="whenLoaded()">
+    <nav class="navbar navbar-dark bg-dark">
+      <div class="container-fluid justify-content-center">
+        <a class="navbar-brand" href="fakeProductHTML.html"
+          ><h4>Fake Products</h4></a
+        >
+      </div>
+    </nav>
+
+    <div class="container">
+      <div class="row m-5">
+        <div class="col text-center">
+          <!-- <div class="input-group flex-nowrap input-group-lg">
+            <span class="input-group-text" id="addon-wrapping">Task</span>
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Enter Task Name"
+              aria-label="Task"
+              aria-describedby="addon-wrapping"
+              id="taskName"
+              onchange="validateTaskName('taskName', 'errorTaskName')"
+            />
+          </div>
+          <div id="errorTaskNameDiv" role="alert">
+            <p id="errorTaskName"></p>
+          </div> -->
+          <button
+            type="button"
+            class="btn btn-success btn-lg px-5"
+            onclick="addProduct()"
+          >
+            Add Product
+          </button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <div class="table-responsive">
+            <table
+              class="table table-dark table-striped table-hover text-center"
+            >
+              <thead>
+                <tr>
+                  <th class="align-middle">Sr. No.</th>
+                  <th class="align-middle">Product Name</th>
+                  <th class="align-middle">Price</th>
+                  <th class="align-middle">Quantity</th>
+                  <th class="align-middle">Action</th>
+                </tr>
+              </thead>
+              <tbody id="productListTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Delete Modal -->
+    <div
+      class="modal fade"
+      id="deleteModal"
+      tabindex="-1"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabelDel">
+              Delete Product
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" id="delProductIndex" />
+            Are you sure? The
+            <!-- <q><span id="deleteProductName"></span></q> -->
+            product will be deleted from the Product List.
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-primary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button
+              type="button"
+              class="btn btn-danger"
+              data-bs-dismiss="modal"
+              onclick="purgeProduct()"
+            >
+              Delete Product
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add Modal -->
+    <div
+      class="modal fade"
+      id="addModal"
+      tabindex="-1"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabelEdit">Add Product</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <div class="input-group flex-nowrap my-4">
+              <span class="input-group-text" id="addon-wrapping-edit1"
+                >Product Name</span
+              >
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Enter Product Name"
+                aria-label="Product Name"
+                aria-describedby="addon-wrapping-edit"
+                id="addProductName"
+                onchange="validateProductName('addProductName', 'errorAddProductName')"
+              />
+            </div>
+            <div class="input-group flex-nowrap my-4">
+              <span class="input-group-text" id="addon-wrapping-edit2"
+                >Price</span
+              >
+              <input
+                type="number"
+                class="form-control"
+                placeholder="Enter Price"
+                aria-label="Price"
+                aria-describedby="addon-wrapping-edit"
+                id="addPrice"
+                onchange="validatePrice('addPrice', 'errorAddProductName')"
+              />
+            </div>
+            <div class="input-group flex-nowrap my-4">
+              <span class="input-group-text" id="addon-wrapping-edit3"
+                >Quantity</span
+              >
+              <input
+                type="number"
+                class="form-control"
+                placeholder="Enter Quantity"
+                aria-label="Quantity"
+                aria-describedby="addon-wrapping-edit"
+                id="addQuantity"
+                onchange="validateQuantity('addQuantity', 'errorAddProductName')"
+              />
+            </div>
+            <input type="hidden" id="addProductIndex" />
+            <div id="errorAddProductNameDiv" role="alert">
+              <p id="errorAddProductName"></p>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-primary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button
+              type="button"
+              class="btn btn-warning"
+              onclick="confirmProduct('addProductName', 'errorAddProductName')"
+            >
+              Add
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Product Added Toast -->
+    <div
+      class="toast align-items-center text-white bg-success border-0 toastPosition"
+      role="alert"
+      aria-live="assertive"
+      aria-atomic="true"
+      id="addToast"
+    >
+      <div class="d-flex">
+        <div class="toast-body">Product added successfully!</div>
+        <button
+          type="button"
+          class="btn-close btn-close-white me-2 m-auto"
+          data-bs-dismiss="toast"
+          aria-label="Close"
+        ></button>
+      </div>
+    </div>
+
+    <!-- Product Deleted Toast -->
+    <div
+      class="toast align-items-center text-white bg-danger border-0 toastPosition"
+      role="alert"
+      aria-live="assertive"
+      aria-atomic="true"
+      id="delToast"
+    >
+      <div class="d-flex">
+        <div class="toast-body">Product deleted successfully!</div>
+        <button
+          type="button"
+          class="btn-close btn-close-white me-2 m-auto"
+          data-bs-dismiss="toast"
+          aria-label="Close"
+        ></button>
+      </div>
+    </div>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+      crossorigin="anonymous"
+    ></script>
+
+    <script>
+      class Products {
+        constructor() {
+          this.fakeURL = "http://localhost:3000/fakeProducts";
+          this.validProductName = false;
+          this.validPrice = false;
+          this.validQuantity = false;
+          this.validAll = false;
+        }
+
+        fetchData() {
+          fetch(this.fakeURL)
+            .then((response) => response.json())
+            .then((rawData) => {
+              if (rawData) {
+                console.log(rawData);
+                this.displayData(rawData);
+              }
+            });
+        }
+
+        postData(productName, price, quantity) {
+          let product = {
+            pname: productName,
+            price: price,
+            quantity: quantity,
+          };
+          const options = {
+            method: "POST",
+            body: JSON.stringify(product),
+            headers: {
+              "Content-Type": "application/json",
+            },
+          };
+          fetch(this.fakeURL, options)
+            .then((response) => response.json())
+            .then((rawData) => {
+              if (rawData) {
+                console.log(rawData);
+                this.displayData(rawData);
+              }
+            });
+        }
+
+        clearData(productIndex) {
+          const options = {
+            method: "DELETE",
+          };
+          fetch(`${this.fakeURL}/${productIndex}`, options)
+            .then((response) => response.json())
+            .then((rawData) => {
+              if (rawData) {
+                console.log(rawData);
+                this.displayData(rawData);
+              }
+            });
+        }
+
+        displayData(rawData) {
+          // let mainDiv = document.getElementById("content-body");
+          // let newDiv = document.createElement("div");
+
+          // for (let data of rawData) {
+          //   newDiv.innerHTML += `<h3>${data.title}</h3>`;
+          //   newDiv.innerHTML += `<p>&emsp;${data.body}</p>`;
+          //   newDiv.innerHTML += `<hr>`;
+          //   mainDiv.appendChild(newDiv);
+          // }
+
+          for (let [index, product] of rawData.entries()) {
+            let newTableRow = document.createElement("tr");
+            // let editButton = `<button type="button" class="btn btn-warning mx-2" onclick=editTask(${index})>Edit</button>`;
+            let deleteButton = `<button type="button" class="btn btn-danger mx-2" onclick=deleteProduct(${product.id})>Delete</button>`;
+            newTableRow.innerHTML = `<td class="align-middle">${
+              index + 1
+            }</td><td class="align-middle">${
+              product.pname
+            }</td><td class="align-middle">	&#8377;${
+              product.price
+            }</td><td class="align-middle">${
+              product.quantity
+            }</td><td class="align-middle">${deleteButton}</td>`;
+            document
+              .getElementById("productListTableBody")
+              .appendChild(newTableRow);
+          }
+        }
+
+        // Product name validation
+        validateProductName(textBox, errorTextBox) {
+          let productName = document.getElementById(textBox).value;
+          let errorProductName = document.getElementById(errorTextBox);
+          let errorProductNameDiv = document.getElementById(
+            errorTextBox + "Div"
+          );
+          let expProductName = /^[a-zA-Z][a-zA-Z0-9 ]+$/;
+
+          if (!expProductName.test(productName)) {
+            errorProductName.textContent =
+              "Product Name must start with an alphabet with minimum 2 chars. No special chars allowed!";
+            errorProductName.style.color = "red";
+            errorProductNameDiv.className = "alert alert-danger";
+            // return -1;
+            this.validProductName = false;
+          } else {
+            errorProductName.textContent = "";
+            errorProductNameDiv.className = "";
+            // return 1;
+            this.validProductName = true;
+          }
+        }
+
+        // Price validation
+        validatePrice(textBox, errorTextBox) {
+          let price = document.getElementById(textBox).value;
+          let errorProductName = document.getElementById(errorTextBox);
+          let errorProductNameDiv = document.getElementById(
+            errorTextBox + "Div"
+          );
+          // let expProductName = /^[a-zA-Z][a-zA-Z0-9 ]+$/;
+
+          if (price <= 0) {
+            errorProductName.textContent = "Price must be > 0!";
+            errorProductName.style.color = "red";
+            errorProductNameDiv.className = "alert alert-danger";
+            // return -1;
+            this.validPrice = false;
+          } else {
+            errorProductName.textContent = "";
+            errorProductNameDiv.className = "";
+            // return 1;
+            this.validPrice = true;
+          }
+        }
+
+        // Quantity validation
+        validateQuantity(textBox, errorTextBox) {
+          let quantity = document.getElementById(textBox).value;
+          let errorProductName = document.getElementById(errorTextBox);
+          let errorProductNameDiv = document.getElementById(
+            errorTextBox + "Div"
+          );
+          // let expProductName = /^[a-zA-Z][a-zA-Z0-9 ]+$/;
+
+          if (quantity <= 0) {
+            errorProductName.textContent = "Quantity must be > 0!";
+            errorProductName.style.color = "red";
+            errorProductNameDiv.className = "alert alert-danger";
+            // return -1;
+            this.validQuantity = false;
+          } else {
+            errorProductName.textContent = "";
+            errorProductNameDiv.className = "";
+            // return 1;
+            this.validQuantity = true;
+          }
+        }
+
+        validateAll() {
+          if (
+            this.validProductName == true &&
+            this.validPrice == true &&
+            this.validQuantity == true
+          ) {
+            this.validAll = true;
+          }
+        }
+
+        // Trigger edit Task name modal
+        addData() {
+          let myModal = new bootstrap.Modal(
+            document.getElementById("addModal")
+          );
+          // document.getElementById("addProductName").value = "heeee";
+          // document.getElementById("addProductIndex").value = "100";
+          myModal.show();
+        }
+
+        // Update with new Task name
+        pushData(addProductName, addPrice, addQuantity, errorAddProductName) {
+          this.validateAll(
+            addProductName,
+            addPrice,
+            addQuantity,
+            errorAddProductName
+          );
+          if (this.validAll == true) {
+            // let taskIndex = document.getElementById("editTaskIndex").value;
+            let productName = document.getElementById("addProductName").value;
+            let price = document.getElementById("addPrice").value;
+            let quantity = document.getElementById("addQuantity").value;
+
+            // this.taskList[taskIndex] = taskName;
+            this.postData(productName, price, quantity);
+
+            let addToast = document.getElementById("addToast");
+            let triggerToast = new bootstrap.Toast(addToast, {
+              animation: true,
+              delay: 3000,
+            });
+            triggerToast.show();
+
+            // this.clearTaskList();
+            this.displayTaskList();
+
+            document.querySelector("#addModal").classList.remove("show");
+            document.querySelector("body").classList.remove("modal-open");
+            const mdbackdrop = document.querySelector(".modal-backdrop");
+            if (mdbackdrop) {
+              mdbackdrop.classList.remove("modal-backdrop", "show");
+            }
+          }
+        }
+
+        // Trigger delete Task name modal
+        removeProduct(productIndex) {
+          let myModal = new bootstrap.Modal(
+            document.getElementById("deleteModal")
+          );
+          // document.getElementById("deleteProductName").textContent =
+          //   this.taskList[taskIndex];
+          document.getElementById("delProductIndex").value = productIndex;
+          myModal.show();
+        }
+
+        // Deletes the Task name from the Task list
+        purgeProduct() {
+          let productIndex = document.getElementById("delProductIndex").value;
+
+          this.clearData(productIndex);
+          // this.taskList.splice(taskIndex, 1);
+
+          let delToast = document.getElementById("delToast");
+          let triggerToast = new bootstrap.Toast(delToast, {
+            animation: true,
+            delay: 3000,
+          });
+          triggerToast.show();
+
+          // this.clearTaskList();
+          // if (this.taskList.length > 0) this.displayTaskList();
+          // else this.initTaskTableClass();
+        }
+      }
+
+      const missionBegin = new Products();
+
+      function whenLoaded() {
+        missionBegin.fetchData();
+      }
+
+      function validateProductName(textBox, errorTextBox) {
+        missionBegin.validateProductName(textBox, errorTextBox);
+      }
+
+      function validatePrice(textBox, errorTextBox) {
+        missionBegin.validatePrice(textBox, errorTextBox);
+      }
+
+      function validateQuantity(textBox, errorTextBox) {
+        missionBegin.validateQuantity(textBox, errorTextBox);
+      }
+
+      function addProduct() {
+        missionBegin.addData();
+      }
+
+      function confirmProduct(addProductName, errorAddProductName) {
+        missionBegin.pushData(addProductName, errorAddProductName);
+      }
+
+      function deleteProduct(productIndex) {
+        missionBegin.removeProduct(productIndex);
+      }
+
+      function purgeProduct() {
+        missionBegin.purgeProduct();
+      }
+    </script>
+  </body>
+</html>
